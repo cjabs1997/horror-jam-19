@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Transform rotObj;
+    public Transform pivObj;
+
     CharacterController _characterController;
     Transform _transform;
 
@@ -17,7 +20,7 @@ public class PlayerController : MonoBehaviour
     {
         _characterController = this.GetComponent<CharacterController>();
         _transform = this.transform;
-        xCamAngle = 0;
+        xCamAngle = 0; // Might need to set some initial thing here
         yCamAngle = 0;
     }
 
@@ -30,16 +33,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Moving stuff
         Vector3 moveVector = Vector3.zero;
-        moveVector += _transform.forward * Input.GetAxisRaw("Vertical");
-        moveVector += _transform.right * Input.GetAxisRaw("Horizontal");
+        moveVector += rotObj.forward * Input.GetAxisRaw("Vertical");
+        moveVector += rotObj.right * Input.GetAxisRaw("Horizontal");
+        moveVector.Scale(new Vector3(1,0,1));
         moveVector.Normalize(); // For if we move in a diagonal
+        // Hover: similar concept but make a new input axis between desired buttons and add to the Y value
 
+
+        _characterController.Move(moveVector * moveSpeed * Time.deltaTime);
+
+        // Camera stuff, this should be a separate Obj that lerps to this position me thinks
         Debug.Log(Input.GetAxis("Mouse X") + "  " + Input.GetAxis("Mouse Y"));
+        xCamAngle += -Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
+        yCamAngle += Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
 
-        _characterController.Move(moveVector*moveSpeed*Time.deltaTime);
-        
+        Vector3 rotation = Vector3.zero;
+        rotation.x = xCamAngle;
+        Quaternion targetRotation = Quaternion.Euler(rotation);
+        rotObj.localRotation = targetRotation;
 
-
+        rotation = Vector3.zero;
+        rotation.y = yCamAngle;
+        targetRotation = Quaternion.Euler(rotation);
+        pivObj.localRotation = targetRotation;
     }
 }
