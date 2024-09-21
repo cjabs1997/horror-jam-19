@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     Transform _camTransform;
 
     [SerializeField] private float moveSpeed;
-    [SerializeField] private float rotSpeed;
+    [SerializeField] private float hoverSpeed;
 
     private float xCamAngle;
     private float yCamAngle;
@@ -36,12 +36,13 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVector = Vector3.zero;
         moveVector += _camTransform.forward * Input.GetAxisRaw("Vertical");
         moveVector += _camTransform.right * Input.GetAxisRaw("Horizontal");
-        moveVector.Scale(new Vector3(1,0,1));
+        moveVector.Scale(new Vector3(1,0,1)); // So we don't move up if we're pointing up, etc
         moveVector.Normalize(); // For if we move in a diagonal
+        moveVector *= moveSpeed;
         // Hover: similar concept but make a new input axis between desired buttons and add to the Y value
+        moveVector.y = hoverSpeed * Input.GetAxisRaw("Hover");
 
-
-        _characterController.Move(moveVector * moveSpeed * Time.deltaTime);
+        _characterController.Move(moveVector * Time.deltaTime);
 
         /*
         // Camera stuff, this should be a separate Obj that lerps to this position me thinks
