@@ -60,14 +60,24 @@ public class BuiltInCharacterController : MonoBehaviour
     {
         //Debug.Log("COLLISION VECTOR: " + hit.rigidbody.velocity.magnitude);
 
-        if(hit.rigidbody)
+        Rigidbody body = hit.collider.attachedRigidbody;
+
+        if(body != null && !body.isKinematic)
         {
-            Debug.Log("RIGID");
-            hit.rigidbody.AddForce((hit.point - _transform.position).normalized * 5);
+            Vector3 appliedForce = ((moveVector * moveSpeed - hit.rigidbody.velocity) * hit.rigidbody.mass);
+
+            //hit.rigidbody.AddForce((hit.point - _transform.position).normalized * 15);
+            //hit.rigidbody.AddForce(appliedForce, ForceMode.Force);
+
+            //hit.rigidbody.AddForce(moveVector*moveSpeed, ForceMode.Force);
+
+            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+            //hit.rigidbody.AddForce(pushDir * moveSpeed, ForceMode.Force);
+            body.velocity += pushDir/2;
         }
         else
         {
-            Debug.Log("STATIC");
+            // Shit is static yo
         }
     }
 }
