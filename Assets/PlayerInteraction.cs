@@ -19,6 +19,10 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         ControlTargetHighlighting();
+
+        if (interactionTarget != null)
+            interactionTarget.ActivateInteraction();
+
     }
 
     private void ControlTargetHighlighting()
@@ -30,12 +34,12 @@ public class PlayerInteraction : MonoBehaviour
             //we don't currently have a target
             if (newTarget == null)
             {
-                //we haven't found an interactable to target yet. do nothing
+                //Debug.Log("Haven't seen a target yet. Do nothing.");
                 return;
             }
             else
             {
-                //found our first target
+                //Debug.Log("Found our first target. We should highlight it.");
                 interactionTarget = newTarget;
                 interactionTarget.HighlightInteractable();
             }
@@ -45,17 +49,22 @@ public class PlayerInteraction : MonoBehaviour
             //we have a current target already
             if (newTarget == null)
             {
-                //we are no longer in range of previous target
+                //Debug.Log("We lost our previous target. No current target.");
                 interactionTarget.ClearHighlight();
+                interactionTarget = null;
             }
             else
             {
                 //we are in range of a target
                 //is it the one we already have selected?
                 if (interactionTarget == newTarget)
+                {
+                    //Debug.Log("Still looking at the same target. Change nothing.");
                     return;
+                }
                 else
                 {
+                    //Debug.Log("Found a better target. Switching.");
                     interactionTarget.ClearHighlight();
                     interactionTarget = newTarget;
                     interactionTarget.HighlightInteractable();

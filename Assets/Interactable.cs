@@ -9,16 +9,17 @@ public class Interactable : MonoBehaviour
 
     protected MeshRenderer _meshRenderer;
 
-    void Start()
+    protected virtual void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         if (_meshRenderer != null)
-            defaultMaterial = _meshRenderer.material;
+            defaultMaterial = _meshRenderer.materials[0];
     }
 
     public virtual void ActivateInteraction()
     {
         //this method will be overridden by inheriting interactables, as they will need their own behavior
+        Debug.Log("This is the base class activation.");
     }
 
     public void HighlightInteractable()
@@ -26,7 +27,9 @@ public class Interactable : MonoBehaviour
         if (_meshRenderer == null)
             return;
 
-        _meshRenderer.material = highlightMaterial;
+        Material[] matArray = _meshRenderer.materials;
+        matArray[0] = highlightMaterial;
+        _meshRenderer.materials = matArray;
     }
 
     public void ClearHighlight()
@@ -34,6 +37,8 @@ public class Interactable : MonoBehaviour
         if (_meshRenderer == null)
             return;
 
-        _meshRenderer.material = defaultMaterial;
+        Material[] matArray = _meshRenderer.materials;
+        matArray[0] = defaultMaterial;
+        _meshRenderer.materials = matArray;
     }
 }
