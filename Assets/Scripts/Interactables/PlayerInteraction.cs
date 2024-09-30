@@ -20,9 +20,19 @@ public class PlayerInteraction : MonoBehaviour
     {
         ControlTargetHighlighting();
 
-        if (interactionTarget != null)
-            interactionTarget.ActivateInteraction();
+        //input here only for testing.
+        //In the future, the player controller script can call this public method
+        if (Input.GetMouseButtonDown(0))
+            ActivateCurrentInteractionTarget();
 
+    }
+
+    public void ActivateCurrentInteractionTarget()
+    {
+        if (interactionTarget == null)
+            return;
+
+        interactionTarget.ActivateInteraction();
     }
 
     private void ControlTargetHighlighting()

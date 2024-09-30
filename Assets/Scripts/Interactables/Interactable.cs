@@ -8,6 +8,7 @@ public class Interactable : MonoBehaviour
     protected Material defaultMaterial;
 
     protected MeshRenderer _meshRenderer;
+    protected bool isBusy = false;
 
     protected virtual void Start()
     {
@@ -19,7 +20,8 @@ public class Interactable : MonoBehaviour
     public virtual void ActivateInteraction()
     {
         //this method will be overridden by inheriting interactables, as they will need their own behavior
-        Debug.Log("This is the base class activation.");
+        if (isBusy)
+            return;
     }
 
     public void HighlightInteractable()

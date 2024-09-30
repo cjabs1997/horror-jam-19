@@ -15,7 +15,6 @@ public class InteractableTest : Interactable
     public override void ActivateInteraction()
     {
         base.ActivateInteraction();
-        Debug.Log("This is the derived class activation");
         //for this test object, I'll just throw the object in the air when activated
         _rb.AddForce(Vector3.up * 200);
     }
