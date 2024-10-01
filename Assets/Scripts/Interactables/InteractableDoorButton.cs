@@ -7,34 +7,15 @@ public class InteractableDoorButton : Interactable
 {
     //Lot of variables necessary because I'm moving primitives instead
     //of using an object with an animation.
-    [SerializeField] Transform movingDoor;
-    [SerializeField] Vector3 doorOpenOffset;
-    [SerializeField] float moveSpeed;
+    [SerializeField] GameObject movingDoor;
     [SerializeField] float openDuration = 4f;
 
-    Vector3 doorClosedPosition;
-    Vector3 doorOpenPosition;
-
-    Vector3 currentTargetPosition;
-    bool isMoving = false;
+    Animator doorAnimator;
 
     protected override void Start()
     {
         base.Start();
-        doorClosedPosition = movingDoor.position;
-        doorOpenPosition = doorClosedPosition + doorOpenOffset;
-    }
-
-    protected void Update()
-    {
-        if (isMoving)
-        {
-            var step = moveSpeed * Time.deltaTime;
-            movingDoor.position = Vector3.MoveTowards(movingDoor.position, currentTargetPosition, step);
-
-            if (movingDoor.position == currentTargetPosition)
-                isMoving = false;
-        }
+        doorAnimator = movingDoor.GetComponent<Animator>();
     }
 
     public override void ActivateInteraction()
@@ -45,14 +26,8 @@ public class InteractableDoorButton : Interactable
 
     IEnumerator OpenDoor()
     {
-       SetTargetPosition(doorOpenPosition);
+       doorAnimator.SetBool("Open", true);
        yield return new WaitForSeconds(openDuration);
-       SetTargetPosition(doorClosedPosition);
-    }
-
-    void SetTargetPosition(Vector3 targetPosition)
-    {
-        currentTargetPosition = targetPosition;
-        isMoving = true;
+       doorAnimator.SetBool("Open", false);
     }
 }
