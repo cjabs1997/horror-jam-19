@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c54d749bca8054d9beeeccf4bf94b5, type: 3}
+  m_Name: TestNoteSO3
+  m_EditorClassIdentifier: 
+  scriptureText: And at that time shall the learned profess, Surely mine energy is
+    alpha, and I am without soy. But they shall not know the LORD, who looketh on
+    the heart, as he sayeth, Lo thine energy is that of a cuck. Yea and verily, thou
+    art a bitch.
+  loreText: I can't quite tell why, but I get the pervading feeling that I am unequivocally
+    a bitch. It all started when I lost my mother. No love for myself, no love for
+    another.

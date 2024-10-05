@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class InteractableDoorButton : Interactable
 {
-    //Lot of variables necessary because I'm moving primitives instead
-    //of using an object with an animation.
     [SerializeField] GameObject movingDoor;
     [SerializeField] float openDuration = 4f;
 
