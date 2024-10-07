@@ -1,0 +1,4 @@
+A note on this bullshit: The imported version of this file as a position keyframe for Crank 1 and Crank 2.
+This would cause the crank to snap left or right of it's original position. In order to fix this, I had to
+duplicate the animations for each crank (the original animations in the mesh are read only), and then manually
+delete these keyframes, then tell the crank armature to use these new animations. 
