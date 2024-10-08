@@ -8,15 +8,22 @@ public class BuiltInCharacterController : MonoBehaviour
     Transform _transform;
     Transform _camTransform;
 
+    PlayerInteraction _playerInteraction;
+    public PlayerInteraction PlayerInteraction { get { return _playerInteraction; } }
+
     [SerializeField] private float moveSpeed;
     // [SerializeField] private float moveAcceleration; // We can see about adding this back
 
-    Vector3 moveVector;
+    private Vector3 _moveVector;
+    public Vector3 MoveVector { get { return _moveVector * moveSpeed; } }
+
     bool boost; // This was to test an interaction, ignore me
 
     private void Awake()
     {
         _characterController = this.GetComponent<CharacterController>();
+        _playerInteraction = this.GetComponent<PlayerInteraction>();
+
         _transform = this.transform;
         _camTransform = Camera.main.transform;
         boost = false;
@@ -30,20 +37,20 @@ public class BuiltInCharacterController : MonoBehaviour
     void Update()
     {
         // Moving stuff
-        moveVector = Vector3.zero;
-        moveVector += _camTransform.forward * Input.GetAxisRaw("Vertical");
-        moveVector += _camTransform.right * Input.GetAxisRaw("Horizontal");
-        moveVector.y = 0; // So we don't move up if we're pointing up, etc
-        moveVector.Normalize(); // For if we move in a diagonal
+        _moveVector = Vector3.zero;
+        _moveVector += _camTransform.forward * Input.GetAxisRaw("Vertical");
+        _moveVector += _camTransform.right * Input.GetAxisRaw("Horizontal");
+        _moveVector.y = 0; // So we don't move up if we're pointing up, etc
+        _moveVector.Normalize(); // For if we move in a diagonal
 
-        bool t = _characterController.SimpleMove(moveVector * moveSpeed);
+        bool t = _characterController.SimpleMove(_moveVector * moveSpeed);
 
         if (false && Input.GetKeyDown(KeyCode.Space)) // This was to test an interaction, ignore me
         {
             boost = true;
         }
 
-        // Likely check if no input and can add some pseudo drag
+        CheckInteraction();
     }
 
     private void FixedUpdate()
@@ -64,7 +71,7 @@ public class BuiltInCharacterController : MonoBehaviour
 
         if(body != null && !body.isKinematic)
         {
-            Vector3 appliedForce = ((moveVector * moveSpeed - hit.rigidbody.velocity) * hit.rigidbody.mass);
+            Vector3 appliedForce = ((_moveVector * moveSpeed - hit.rigidbody.velocity) * hit.rigidbody.mass);
 
             //hit.rigidbody.AddForce((hit.point - _transform.position).normalized * 15);
             //hit.rigidbody.AddForce(appliedForce, ForceMode.Force);
@@ -78,6 +85,21 @@ public class BuiltInCharacterController : MonoBehaviour
         else
         {
             // Shit is static yo
+        }
+    }
+
+    private void CheckInteraction()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(_playerInteraction.heldInteractable == null) // We're not holding something
+            {
+                _playerInteraction.ActivateCurrentInteractionTarget();
+            }
+            else // We're holding something
+            {
+                _playerInteraction.DropInteractable();
+            }
         }
     }
 }
