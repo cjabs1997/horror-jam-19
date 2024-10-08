@@ -604,8 +604,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightMaterial: {fileID: 2100000, guid: 4792b2878c1277e4783c7a93c07869df, type: 2}
-  _lerpSpeed: 5
-  controller: {fileID: 0}
+  minDistanceScale: 0.025
+  holderSpeedScale: 3.5
+  breakPoint: 2
+  maxSpeed: 7
 --- !u!54 &387394651
 Rigidbody:
   m_ObjectHideFlags: 0

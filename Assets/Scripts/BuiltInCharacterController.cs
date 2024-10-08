@@ -12,12 +12,9 @@ public class BuiltInCharacterController : MonoBehaviour
     public PlayerInteraction PlayerInteraction { get { return _playerInteraction; } }
 
     [SerializeField] private float moveSpeed;
-    // [SerializeField] private float moveAcceleration; // We can see about adding this back
 
     private Vector3 _moveVector;
     public Vector3 MoveVector { get { return _moveVector * moveSpeed; } }
-
-    bool boost; // This was to test an interaction, ignore me
 
     private void Awake()
     {
@@ -26,7 +23,6 @@ public class BuiltInCharacterController : MonoBehaviour
 
         _transform = this.transform;
         _camTransform = Camera.main.transform;
-        boost = false;
     }
 
     void Start()
@@ -45,22 +41,7 @@ public class BuiltInCharacterController : MonoBehaviour
 
         bool t = _characterController.SimpleMove(_moveVector * moveSpeed);
 
-        if (false && Input.GetKeyDown(KeyCode.Space)) // This was to test an interaction, ignore me
-        {
-            boost = true;
-        }
-
         CheckInteraction();
-    }
-
-    private void FixedUpdate()
-    {
-
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("COLLISION VECTOR: " + collision.contactCount);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -71,16 +52,8 @@ public class BuiltInCharacterController : MonoBehaviour
 
         if(body != null && !body.isKinematic)
         {
-            Vector3 appliedForce = ((_moveVector * moveSpeed - hit.rigidbody.velocity) * hit.rigidbody.mass);
-
-            //hit.rigidbody.AddForce((hit.point - _transform.position).normalized * 15);
-            //hit.rigidbody.AddForce(appliedForce, ForceMode.Force);
-
-            //hit.rigidbody.AddForce(moveVector*moveSpeed, ForceMode.Force);
-
-            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            //hit.rigidbody.AddForce(pushDir * moveSpeed, ForceMode.Force);
-            body.velocity += pushDir/2;
+            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z); // Gets direction we should push object
+            body.velocity += pushDir/2; // Scaled it down a little to make it feel better, we can adjust this
         }
         else
         {

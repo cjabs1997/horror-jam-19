@@ -4,17 +4,38 @@ using UnityEngine;
 
 public class InteractablePickup : Interactable
 {
-    [SerializeField] protected float _lerpSpeed;
-    private Vector3 velocity = Vector3.zero;
+    // If we use the same values for everything there's an argument to hard code OR
+    // to use a scriptable object. We can come back to this.
+    [Header("Picked Up Traits")]
 
-    protected bool _held;
+    [Tooltip("Affects how close the object needs to be to the hold point before it stops getting scaled up. Speed increase is a ratio of this and " +
+        "the distance the object is from the hold point. Smaller numbers mean it catches up faster."), Range(0f, 1f)]
+    [SerializeField] private float minDistanceScale = 0.025f;
+
+    [Tooltip("Affects how much velocity of the object holding this is applied when the object moves towards the hold point. " +
+        "Must be greater than zero. Larger values mean less of the holder's velocity is added.")]
+    [SerializeField] private float holderSpeedScale = 3.5f;
+
+    [Tooltip("How far away the object can be from the hold point before being dropped.")]
+    [SerializeField] private float breakPoint = 2f;
+
+    [Tooltip("The max speed the object can move towards the hold point. This will override the scaling done from the minDistanceScale and holderSpeedScale. " +
+    "Setting to lower values will make the object appear to 'jump' less but possibly slow down the object.")]
+    [SerializeField] private float maxSpeed = 7f;
+
+
+
+    protected bool _held; // Tracks whether the object is being held
     public Transform holdPoint { get; set; }
-    public BuiltInCharacterController controller; // GROSS but let me cook
+    public BuiltInCharacterController controller { get; set; } // Again don't love saving a reference here but it's a jam, sue me
     protected Rigidbody _rigidbody;
+
+    private float defaultDrag;
 
     private void Awake()
     {
         _rigidbody = this.GetComponent<Rigidbody>();
+        defaultDrag = _rigidbody.drag;
     }
 
     protected override void Start()
@@ -36,7 +57,8 @@ public class InteractablePickup : Interactable
         base.ActivateInteraction();
 
         _held = true;
-        _rigidbody.useGravity = false; // Would we rather make it kinematic? Maybe? We'll see
+        _rigidbody.useGravity = false;
+        _rigidbody.drag = 0f;
 
     }
 
@@ -44,6 +66,7 @@ public class InteractablePickup : Interactable
     {
         _held = false;
         _rigidbody.useGravity = true;
+        _rigidbody.drag = defaultDrag;
         holdPoint = null; // I don't think this is necessary? But might as well
     }
 
@@ -51,28 +74,27 @@ public class InteractablePickup : Interactable
     {
         if (holdPoint != null) // Friendly error checking :)
         {
-            Vector3 v = point.position - this.transform.position;
-            float a = 0.025f; 
-            float b = v.magnitude;
-            float breakPoint = 2f;
-            float maxSpeed = 5f;
+            Vector3 v = point.position - this.transform.position; 
+            float distanceToHoldPoint = v.magnitude;
 
-            if(b > breakPoint)
+            // If above break point, drop the item
+            if (distanceToHoldPoint > breakPoint)
             {
-                // Above break point, drop the item
                 controller.PlayerInteraction.DropInteractable();
                 return;
             }
             
             // Logic basically scales the velocity based on two things:
-            //  - the direction the player is moving
+            //  - the velocity the holder is moving
             //  - how far away the pickup is from its desired location
-            v = v * Mathf.Max(1, b/a) + controller.MoveVector/3.5f; // These values need tweaking, can also consider adding a break point
-                                                                    // Maybe no friction as well?
+            v = v * Mathf.Max(1, distanceToHoldPoint / minDistanceScale) + controller.MoveVector / holderSpeedScale;
+            // There's an assumption only the player can hold objects, I think that's fine for now
 
+            // Clamp the velocity based on the max speed possible
             v = Vector3.ClampMagnitude(v, maxSpeed);
 
             _rigidbody.velocity = v;
+
 
             // This is the most logical but it jitters and messes with the physics system, we should only do this if we use kinematic rigidbodies
             //Vector3 movePos = Vector3.Lerp(this.transform.position, holdPoint.position, _lerpSpeed * Time.fixedDeltaTime);
