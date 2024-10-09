@@ -53,6 +53,9 @@ public class PlayerInteraction : MonoBehaviour
     {
         Interactable newTarget = FindInteractableObject();
 
+        if (heldInteractable != null) // We're holding something so just abort
+            return; // Change this if we want to still highlight stuff when holding things
+
         if (interactionTarget == null)
         {
             //we don't currently have a target
