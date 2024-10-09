@@ -9,7 +9,17 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] float checkDistance;
     [SerializeField] LayerMask interactableLayer;
 
-    Interactable interactionTarget = null;
+    [Tooltip("The point which held objects will try to follow. This should be a Child of the Main Camera Game Object and needs to be dragged in (for now).")]
+    [SerializeField] Transform _holdPoint;
+
+    public Interactable interactionTarget { private set; get; }  = null;
+    public InteractablePickup heldInteractable { private set; get; } = null; // The specific instance of held objects, allows for more functionality
+    public BuiltInCharacterController controller { get; private set; }
+
+    private void Awake()
+    {
+        controller = this.GetComponent<BuiltInCharacterController>(); // GROSS
+    }
 
     void Start()
     {
@@ -22,8 +32,8 @@ public class PlayerInteraction : MonoBehaviour
 
         //input here only for testing.
         //In the future, the player controller script can call this public method
-        if (Input.GetMouseButtonDown(0))
-            ActivateCurrentInteractionTarget();
+        //if (Input.GetMouseButtonDown(0))
+        //    ActivateCurrentInteractionTarget();
 
     }
 
@@ -33,11 +43,18 @@ public class PlayerInteraction : MonoBehaviour
             return;
 
         interactionTarget.ActivateInteraction();
+
+        CheckForPickUp(); // Maybe it makes more sense to include this as part of activating
+                          // and it sort of works it's way back? With how things are right now
+                          // this works. We can refactor later if we want.
     }
 
     private void ControlTargetHighlighting()
     {
         Interactable newTarget = FindInteractableObject();
+
+        if (heldInteractable != null) // We're holding something so just abort
+            return; // Change this if we want to still highlight stuff when holding things
 
         if (interactionTarget == null)
         {
@@ -142,4 +159,42 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.DrawWireSphere(interactableCheck.position, checkRadius);
         Gizmos.DrawWireSphere(interactableCheck.position + Camera.main.transform.forward * checkDistance, checkRadius);
     }
+    #region PickUp Stuff
+
+    private void CheckForPickUp()
+    {
+        // This might be gormless? It lets us determine if it's something we want to pickup
+        // and allows us to get a reference to it's more specific class so we get more 
+        // control. I'm gonna leave it like this for now.
+        // Asks are we holding nothing? AND Is this something we can pick up?
+        if (heldInteractable == null && interactionTarget.TryGetComponent<InteractablePickup>(out InteractablePickup pickup))
+        {
+            Debug.Log("Picked up: " + pickup.gameObject.name);
+            pickup.holdPoint = _holdPoint; // Set hold point
+            heldInteractable = pickup; // Track the object we are holding
+            heldInteractable.ClearHighlight(); // Stop highlighting it (idk if this was needed but we're running with it)
+            heldInteractable.controller = controller; // I don't love passing a reference down like this but it works, sue me
+        }
+    }
+
+    public void DropInteractable()
+    {
+        if (heldInteractable != null) // Friendly error checking :)
+        {
+            heldInteractable.DropInteraction();
+            heldInteractable = null;
+        }
+    }
+
+    public void ThrowInteractable(Vector3 throwForce)
+    {
+        if (heldInteractable != null) // Friendly error checking :)
+        {
+            heldInteractable.DropInteraction(); // Drop the object first
+            heldInteractable.ThrowInteraction(throwForce);
+            heldInteractable = null;
+        }
+    }
+
+    #endregion
 }
