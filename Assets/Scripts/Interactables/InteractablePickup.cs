@@ -17,7 +17,7 @@ public class InteractablePickup : Interactable
     [SerializeField] private float holderSpeedScale = 3.5f;
 
     [Tooltip("How far away the object can be from the hold point before being dropped.")]
-    [SerializeField] private float breakPoint = 2f;
+    [SerializeField] private float breakPoint = 1f;
 
     [Tooltip("The max speed the object can move towards the hold point. This will override the scaling done from the minDistanceScale and holderSpeedScale. " +
     "Setting to lower values will make the object appear to 'jump' less but possibly slow down the object.")]
@@ -68,6 +68,14 @@ public class InteractablePickup : Interactable
         _rigidbody.useGravity = true;
         _rigidbody.drag = defaultDrag;
         holdPoint = null; // I don't think this is necessary? But might as well
+    }
+
+    public void ThrowInteraction(Vector3 throwForce)
+    {
+        // Currently we are setting a force, not adding a velocity
+        // This means that the throw WILL be affected by the mass of the object (takes more force to move a more massive object)
+        // If we want it to be universal we can add to the velocity 
+        _rigidbody.AddForce(throwForce, ForceMode.Impulse);
     }
 
     protected void MoveToPoint(Transform point)

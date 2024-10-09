@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class BuiltInCharacterController : MonoBehaviour
 {
+    [Tooltip("How many units a second the Player moves.")]
+    [SerializeField] private float moveSpeed;
+    [Tooltip("How much force is applied to the held object when thrown. This is affected by " +
+        "the thrown object's mass.")]
+    [SerializeField] private float throwForce;
+
     CharacterController _characterController;
     Transform _transform;
     Transform _camTransform;
 
     PlayerInteraction _playerInteraction;
     public PlayerInteraction PlayerInteraction { get { return _playerInteraction; } }
-
-    [SerializeField] private float moveSpeed;
 
     private Vector3 _moveVector;
     public Vector3 MoveVector { get { return _moveVector * moveSpeed; } }
@@ -72,6 +76,13 @@ public class BuiltInCharacterController : MonoBehaviour
             else // We're holding something
             {
                 _playerInteraction.DropInteractable();
+            }
+        }
+        else if (Input.GetMouseButtonDown(1)) // Else if-ing because it'd be weird to like pick something up AND throw it the same frame? Prioritizing pickups
+        {
+            if (_playerInteraction.heldInteractable != null) // We're holding something, throw it!
+            {
+                _playerInteraction.ThrowInteractable(_camTransform.forward*throwForce); // Add a force the direction we're facing
             }
         }
     }

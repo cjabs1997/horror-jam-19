@@ -183,5 +183,15 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    public void ThrowInteractable(Vector3 throwForce)
+    {
+        if (heldInteractable != null) // Friendly error checking :)
+        {
+            heldInteractable.DropInteraction(); // Drop the object first
+            heldInteractable.ThrowInteraction(throwForce);
+            heldInteractable = null;
+        }
+    }
+
     #endregion
 }

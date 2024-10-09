@@ -606,7 +606,7 @@ MonoBehaviour:
   highlightMaterial: {fileID: 2100000, guid: 4792b2878c1277e4783c7a93c07869df, type: 2}
   minDistanceScale: 0.025
   holderSpeedScale: 3.5
-  breakPoint: 2
+  breakPoint: 1.5
   maxSpeed: 7
 --- !u!54 &387394651
 Rigidbody:
@@ -3592,6 +3592,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5906213205792552718, guid: 3ad7cb8899c95f34f8ccafef01d4412d,
+        type: 3}
+      propertyPath: throwForce
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7023520708263734855, guid: 3ad7cb8899c95f34f8ccafef01d4412d,
         type: 3}
