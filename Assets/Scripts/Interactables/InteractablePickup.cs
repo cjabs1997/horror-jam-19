@@ -30,12 +30,14 @@ public class InteractablePickup : Interactable
     public BuiltInCharacterController controller { get; set; } // Again don't love saving a reference here but it's a jam, sue me
     protected Rigidbody _rigidbody;
 
-    private float defaultDrag;
+    private float _defaultDrag;
+    private LayerMask _defaultLayer;
 
     private void Awake()
     {
         _rigidbody = this.GetComponent<Rigidbody>();
-        defaultDrag = _rigidbody.drag;
+        _defaultDrag = _rigidbody.drag;
+        _defaultLayer = this.gameObject.layer;
     }
 
     protected override void Start()
@@ -59,6 +61,7 @@ public class InteractablePickup : Interactable
         _held = true;
         _rigidbody.useGravity = false;
         _rigidbody.drag = 0f;
+        this.gameObject.layer = LayerMask.NameToLayer("PickUp");
 
     }
 
@@ -66,7 +69,8 @@ public class InteractablePickup : Interactable
     {
         _held = false;
         _rigidbody.useGravity = true;
-        _rigidbody.drag = defaultDrag;
+        _rigidbody.drag = _defaultDrag;
+        this.gameObject.layer = _defaultLayer;
         holdPoint = null; // I don't think this is necessary? But might as well
     }
 
