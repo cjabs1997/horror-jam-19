@@ -33,7 +33,7 @@ public class InteractablePickup : Interactable
     private float _defaultDrag;
     private LayerMask _defaultLayer;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _rigidbody = this.GetComponent<Rigidbody>();
         _defaultDrag = _rigidbody.drag;

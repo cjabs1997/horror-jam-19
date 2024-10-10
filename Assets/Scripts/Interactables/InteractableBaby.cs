@@ -8,6 +8,13 @@ public class InteractableBaby : InteractablePickup
     [SerializeField] float timeToRotate;
 
     private Coroutine _rotateRoutine;
+    private BabyController _babyController;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _babyController = this.GetComponent<BabyController>();
+    }
 
     public override void PickUpInteraction()
     {
@@ -15,14 +22,18 @@ public class InteractableBaby : InteractablePickup
 
         _rigidbody.freezeRotation = true;
         _rotateRoutine = StartCoroutine(RotateToPlayer());
+        _babyController.BabyPickedUp();
     }
 
     public override void DropInteraction()
     {
         base.DropInteraction();
 
-        StopCoroutine(_rotateRoutine);
+        if(_rotateRoutine != null)
+            StopCoroutine(_rotateRoutine);
+
         _rigidbody.freezeRotation = false;
+        _babyController.BabyDropped();
     }
 
     IEnumerator RotateToPlayer()

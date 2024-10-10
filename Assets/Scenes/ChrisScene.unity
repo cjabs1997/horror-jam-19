@@ -2641,6 +2641,7 @@ GameObject:
   - component: {fileID: 1884522130}
   - component: {fileID: 1884522129}
   - component: {fileID: 1884522128}
+  - component: {fileID: 1884522131}
   m_Layer: 6
   m_Name: TestBaby
   m_TagString: Untagged
@@ -2731,6 +2732,22 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &1884522131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884522126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b6a0f352d508f4bb38dd4ccdaae9a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expirationTime: 3
+  babyPickedUpEvent: {fileID: 11400000, guid: bb1d6ceaca4110e4899d82b587a552d4, type: 2}
+  babyDroppedEvent: {fileID: 11400000, guid: 7746095e2a77b7c4685d71bf3b3922fa, type: 2}
+  babyExpiredEvent: {fileID: 11400000, guid: c72ed7317e5e197428ef86ae0e065cd2, type: 2}
 --- !u!1 &1951683797
 GameObject:
   m_ObjectHideFlags: 0
