@@ -174,6 +174,7 @@ public class PlayerInteraction : MonoBehaviour
             heldInteractable = pickup; // Track the object we are holding
             heldInteractable.ClearHighlight(); // Stop highlighting it (idk if this was needed but we're running with it)
             heldInteractable.controller = controller; // I don't love passing a reference down like this but it works, sue me
+            heldInteractable.PickUpInteraction();
         }
     }
 

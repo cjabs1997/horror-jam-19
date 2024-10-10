@@ -25,7 +25,7 @@ public class InteractablePickup : Interactable
 
 
 
-    protected bool _held; // Tracks whether the object is being held
+    public bool held { protected set; get; } // Tracks whether the object is being held
     public Transform holdPoint { get; set; }
     public BuiltInCharacterController controller { get; set; } // Again don't love saving a reference here but it's a jam, sue me
     protected Rigidbody _rigidbody;
@@ -43,12 +43,12 @@ public class InteractablePickup : Interactable
     protected override void Start()
     {
         base.Start();
-        _held = false;
+        held = false;
     }
 
     void FixedUpdate() // I think we want to move this with physics? It makes the most sense.
     {
-        if (_held)
+        if (held)
         {
             MoveToPoint(holdPoint);
         }
@@ -58,16 +58,21 @@ public class InteractablePickup : Interactable
     {
         base.ActivateInteraction();
 
-        _held = true;
+        held = true;
         _rigidbody.useGravity = false;
         _rigidbody.drag = 0f;
         this.gameObject.layer = LayerMask.NameToLayer("PickUp");
 
     }
 
-    public void DropInteraction()
+    public virtual void PickUpInteraction()
     {
-        _held = false;
+        // If we want anything in particular when picked up
+    }
+
+    public virtual void DropInteraction()
+    {
+        held = false;
         _rigidbody.useGravity = true;
         _rigidbody.drag = _defaultDrag;
         this.gameObject.layer = _defaultLayer;
